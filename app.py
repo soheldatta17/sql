@@ -31,10 +31,15 @@ def submit():
     roll = request.form['roll']
     name = request.form['name']
 
+
+    if not roll.isdigit():
+        flash('Roll number must be numeric!', 'error')
+        return redirect('/')
+
     with sqlite3.connect('student.db') as conn:
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO students (roll, name) VALUES (?, ?)', (roll, name))
+            cursor.execute('INSERT INTO students (roll, name) VALUES (?, ?)', (int(roll), name))
             conn.commit()
             flash('Student added successfully!', 'success')
         except sqlite3.IntegrityError:
